@@ -49,6 +49,7 @@ class Lecture
   end
 end
 
+def preparation
 document = Nokogiri::HTML(open("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985"))
 main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
 paragraphs = main_section.children
@@ -66,6 +67,10 @@ paragraphs[3..75].each do |course|
     #puts c.description if !c.description.nil?
   end
 end
+return courses
+end
+
+courses = preparation
 
  nbr_courses_with_prerequisites = []
  courses.each do |course| 
