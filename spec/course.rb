@@ -14,7 +14,7 @@ class Lecture
       @credit = course.children[1].content.split(/[^1-9]/).last + "cr."
     end
 
-    if is_there_a_description?(course.children[3]) && !title_is_in_blacklist?(@title)
+    if is_there_a_description?(course.children[3]) && !@code.eql?("ISI6999")
       @description =  course.children[3].content
         prerequis = course.children[4].content
       @prerequis = est_nul?(prerequis)
@@ -22,12 +22,6 @@ class Lecture
        @prerequis = true
     end
 
-  end
-
-  def title_is_in_blacklist?(title)
-    BLACKLIST.find do |words|
-      @title.match words
-    end
   end
 
   def est_nul?(prerequis)
@@ -69,13 +63,14 @@ paragraphs[3..75].each do |course|
     courses << c = Lecture.new(course)
 
     #puts c.title + " " + c.prerequis.to_s
+    #puts c.description if !c.description.nil?
   end
 end
 
  nbr_courses_with_prerequisites = []
  courses.each do |course| 
    unless (course.prerequis)
-    puts course.prerequis
+    #puts course.prerequis
      nbr_courses_with_prerequisites << course.code
    end
 end
