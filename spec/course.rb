@@ -3,7 +3,6 @@ require 'nokogiri'
 
 class Lecture
   attr_accessor :code, :title, :description, :prerequis, :credit
-  BLACKLIST = ["THÈSE","THESIS", "PROJET", "PROJECT"]
 
   def initialize(course)
       header = course.children[0].content
@@ -80,4 +79,3 @@ courses = preparation()
    end
 end
 
-courses.each {|n| puts n.title }
