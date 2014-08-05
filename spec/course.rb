@@ -3,7 +3,6 @@ require 'nokogiri'
 
 class Lecture
   attr_accessor :code, :title, :description, :prerequis, :credit
-  BLACKLIST = ["THÈSE","THESIS", "PROJET", "PROJECT"]
 
   def initialize(course)
       header = course.children[0].content
@@ -49,31 +48,32 @@ class Lecture
   end
 end
 
-document = Nokogiri::HTML(open("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985"))
-main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
-paragraphs = main_section.children
-#puts paragraphs.size
 
-paragraphs = paragraphs[3..75]
-
-courses = []
-paragraphs[3..75].each do |course|
-
-  if course.children[0]
-    courses << c = Lecture.new(course)
-
-    #puts c.title + " " + c.prerequis.to_s
-    #puts c.description if !c.description.nil?
+class Preparation
+  attr_accessor :paragraphs
+  def initialize(link)
+    document = Nokogiri::HTML(open(link))
+    main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
+    @paragraphs = main_section.children
   end
+
+  def all_courses(paragraphs)
+    courses = []
+    paragraphs.each do |course|
+
+      if course.children[0]
+         c = Lecture.new(course)
+         courses << c
+      end#end if
+    end#end do
+    return courses
+  end#end def
+
 end
 
- nbr_courses_with_prerequisites = []
- courses.each do |course| 
-   unless (course.prerequis)
-    #puts course.prerequis
-     nbr_courses_with_prerequisites << course.code
-   end
-end
- puts "courses without prerequisites #{nbr_courses_with_prerequisites.size}"
- puts "number total of course #{courses.size}"
- nbr_courses_with_prerequisites.each {|n| puts n}
+preparation = Preparation.new("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985")
+
+paragraphs = preparation.paragraphs
+p = preparation.all_courses(paragraphs)
+
+puts p.first(3).inspect
