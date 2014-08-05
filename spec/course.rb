@@ -70,7 +70,7 @@ end
 return courses
 end
 
-courses = preparation
+courses = preparation()
 
  nbr_courses_with_prerequisites = []
  courses.each do |course| 
@@ -79,6 +79,5 @@ courses = preparation
      nbr_courses_with_prerequisites << course.code
    end
 end
- puts "courses without prerequisites #{nbr_courses_with_prerequisites.size}"
- puts "number total of course #{courses.size}"
- nbr_courses_with_prerequisites.each {|n| puts n}
+
+courses.each {|n| puts n.title }
