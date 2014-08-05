@@ -70,10 +70,16 @@ class Preparation
   end#end def
 
 end
+return courses
+end
 
-preparation = Preparation.new("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985")
+courses = preparation()
 
-paragraphs = preparation.paragraphs
-p = preparation.all_courses(paragraphs)
+ nbr_courses_with_prerequisites = []
+ courses.each do |course| 
+   unless (course.prerequis)
+    #puts course.prerequis
+     nbr_courses_with_prerequisites << course.code
+   end
+end
 
-puts p.first(3).inspect
