@@ -48,27 +48,23 @@ class Lecture
   end
 end
 
+def preparation
+document = Nokogiri::HTML(open("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985"))
+main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
+paragraphs = main_section.children
+#puts paragraphs.size
 
-class Preparation
-  attr_accessor :paragraphs
-  def initialize(link)
-    document = Nokogiri::HTML(open(link))
-    main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
-    @paragraphs = main_section.children
+paragraphs = paragraphs[3..75]
+
+courses = []
+paragraphs[3..75].each do |course|
+
+  if course.children[0]
+    courses << c = Lecture.new(course)
+
+    #puts c.title + " " + c.prerequis.to_s
+    #puts c.description if !c.description.nil?
   end
-
-  def all_courses(paragraphs)
-    courses = []
-    paragraphs.each do |course|
-
-      if course.children[0]
-         c = Lecture.new(course)
-         courses << c
-      end#end if
-    end#end do
-    return courses
-  end#end def
-
 end
 return courses
 end
