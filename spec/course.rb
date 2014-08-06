@@ -48,35 +48,39 @@ class Lecture
   end
 end
 
-def preparation
-  document = Nokogiri::HTML(open("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985"))
-  main_section = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
-  paragraphs = main_section.children
-  #puts paragraphs.size
 
-  paragraphs = paragraphs[3..75]
-
-  courses = []
-  paragraphs[3..75].each do |course|
-
-    if course.children[0]
-      courses << c = Lecture.new(course)
-
-      #puts c.title + " " + c.prerequis.to_s
-      #puts c.description if !c.description.nil?
-    end
+##############################################
+class ProgramCourse
+  attr_accessor :divs_found
+  def initialize(uottawa_link)
+    document = Nokogiri::HTML(open(uottawa_link))
+    strating_point = document.xpath("/html/body/form/div[3]/div[7]/section/div/div[2]/div/div/div/div[2]/div/div/div[4]/div[5]")
+    @divs_found = strating_point.children
   end
 
-  return courses
-end
+  def all_courses
+      find_courses = []
+      if @divs_found
+        divs_found[3..75].each do |courses|
+          if courses.children[0]
+            c = Lecture.new(courses)
+            find_courses << c
 
-courses = preparation()
+          end#if
+      end#do
+    end#if
 
-nbr_courses_with_prerequisites = []
-  courses.each do |course| 
-   unless (course.prerequis)
-    #puts course.prerequis
-     nbr_courses_with_prerequisites << course.code
-  end
-end
+    return find_courses
 
+  end#def
+
+end#end class
+
+classes = ProgramCourse.new("http://www.etudesup.uottawa.ca/Default.aspx?tabid=1726&monControl=Programmes&ProgId=985")
+classes = classes.all_courses
+
+classes.each { |n| puts n.title }
+
+
+#TODO how to make this programm more like a Service Oriented object
+#TODO how to test the class... cause it have a method??? preparation in this programm
